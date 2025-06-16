@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit a Report</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.29);
+    }
+
+    form {
+      background-color: #1e1e2f;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    textarea {
+      width: 94%;
+      height: 150px;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #333;
+      color: white;
+      resize: none;
+      box-shadow: 0 0 10px rgba(91, 91, 91, 0.393);
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.8rem 2rem;
+      background: #5f5f5f95;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 1rem;
+      color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Twinkle AI</h1>
+
+  <form id="reportForm">
+    <label for="report">Enter your feedback or issue:</label><br><br>
+    <textarea id="reportText" required></textarea><br>
+    <button type="submit">Submit Report</button>
+    <div id="message"></div>
+  </form>
+
+  <script>
+    // ✅ Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAsfEb1fgTnqZ8KHsyguhb5zqaqOe4xsIs",
+      authDomain: "pra-pre.firebaseapp.com",
+      projectId: "pra-pre",
+      storageBucket: "pra-pre.firebasestorage.app",
+      messagingSenderId: "1062139628863",
+      appId: "1:1062139628863:web:48e7245f566334c0b6578a",
+      measurementId: "G-ZP6GEYNFZW"
+    };
+
+    // 🔥 Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const form = document.getElementById('reportForm');
+    const reportText = document.getElementById('reportText');
+    const messageDiv = document.getElementById('message');
+
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        // Redirect if not signed in
+        window.location.href = "login.html";
+      } else {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const message = reportText.value.trim();
+
+          if (message === "") {
+            messageDiv.textContent = "Report can't be empty.";
+            return;
+          }
+
+          try {
+            await db.collection("user_reports").add({
+              uid: user.uid,
+              email: user.email,
+              message: message,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            messageDiv.textContent = "✅ Report submitted successfully!";
+            reportText.value = "";
+          } catch (error) {
+            console.error("Error submitting report:", error);
+            messageDiv.textContent = "❌ Error submitting report. Try again.";
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

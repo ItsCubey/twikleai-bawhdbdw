@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PRA-1u - AI Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e1e, #121212);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #a64bf4, #f35fa2, #0011ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    #countdown {
+      font-size: 1.1rem;
+      color: #686868;
+      margin-bottom: 20px;
+    }
+
+    .chat-box {
+      width: 90%;
+      max-width: 800px;
+      height: 600px;
+      background-color: #1a1a1a;
+      border: 2px solid #2d2d2d;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PRA-1u</h1>
+  <p>Ask PRA-1u anything related to coding, debugging, or development. Built by Twinkle AI using Orimon.</p>
+  <p><strong>10 minutes Trail</strong></p>
+
+  <div class="chat-box">
+    <iframe src="https://bot.orimon.ai/?tenantId=da3bc012-fa87-4b07-a818-25959c41f13c&fullScreenBot=true"></iframe>
+  </div>
+  <div id="countdown">Checking session...</div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAsfEb1fgTnqZ8KHsyguhb5zqaqOe4xsIs",
+      authDomain: "pra-pre.firebaseapp.com",
+      projectId: "pra-pre",
+      storageBucket: "pra-pre.firebasestorage.app",
+      messagingSenderId: "1062139628863",
+      appId: "1:1062139628863:web:48e7245f566334c0b6578a",
+      measurementId: "G-ZP6GEYNFZW"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const countdownElement = document.getElementById('countdown');
+    const SESSION_LIMIT = 10 * 60 * 1000; // 10 minutes in ms
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        const userRef = db.collection("ai_sessions").doc(user.uid);
+        let now = Date.now();
+
+        try {
+          const doc = await userRef.get();
+
+          let startTime;
+          if (!doc.exists) {
+            // First time: set session start time
+            await userRef.set({ accessTime: firebase.firestore.Timestamp.fromDate(new Date()) });
+            startTime = now;
+          } else {
+            startTime = doc.data().accessTime.toDate().getTime();
+          }
+
+          // Calculate time left
+          const endTime = startTime + SESSION_LIMIT;
+
+          function updateCountdown() {
+            const currentTime = Date.now();
+            const remaining = endTime - currentTime;
+
+            if (remaining <= 0) {
+              countdownElement.innerText = "Session expired. Redirecting to dashboard...";
+              window.location.href = "dashboard.html";
+              return;
+            }
+
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            countdownElement.innerText = `Time left: ${minutes}m ${seconds}s`;
+          }
+
+          updateCountdown(); // initial
+          setInterval(updateCountdown, 1000); // update every second
+
+        } catch (err) {
+          console.error("Error checking Firestore:", err);
+          countdownElement.innerText = "Error loading session.";
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

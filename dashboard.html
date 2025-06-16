@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRA-1U AI Dashboard | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --ivory: #FFFFFF;
+            --snow: #F8F9FA;
+            --silver: #E9ECEF;
+            --graphite: #343A40;
+            --carbon: #212529;
+            --gold: #0000007e;
+            --gold-dark: #2a2a2a9b;
+            --platinum: #F0F2F5;
+            --steel: #6C757D;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--ivory), var(--platinum));
+            color: var(--carbon);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 2rem 1rem;
+        }
+        
+        .dashboard-container {
+            width: 90%;
+            max-width: 1400px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header {
+            margin-bottom: 5rem;
+            position: relative;
+        }
+        
+        .logo-container {
+            position: relative;
+            margin: 0 auto 2.5rem;
+            width: 140px;
+            height: 140px;
+        }
+        
+        .logo {
+            width: 100%;
+            height: 100%;
+            background: var(--ivory);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--silver);
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: conic-gradient(
+                transparent, 
+                transparent, 
+                transparent, 
+                var(--gold)
+            );
+            animation: rotate 4s linear infinite;
+        }
+        
+        .logo-inner {
+            width: calc(100% - 10px);
+            height: calc(100% - 10px);
+            background: var(--ivory);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--graphite);
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--graphite), var(--carbon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+        
+        .coming-soon {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: var(--graphite);
+            margin-bottom: 2.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        .date-badge {
+            background: var(--ivory);
+            color: var(--gold-dark);
+            font-size: 1.6rem;
+            font-weight: 600;
+            padding: 1.2rem 3.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 1.5rem;
+            border: 2px solid var(--gold);
+            box-shadow: 0 12px 25px rgba(212, 175, 55, 0.15);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .date-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .date-badge:hover {
+            background: var(--gold);
+            color: var(--ivory);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.25);
+        }
+        
+        .date-badge:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3.5rem;
+            margin-top: 5rem;
+        }
+        
+        .feature-card {
+            background: var(--ivory);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            border: 1px solid var(--silver);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+            border-color: rgba(121, 121, 121, 0.3);
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 2.5rem;
+            color: var(--gold);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 50%;
+            transition: var(--transition);
+            border: 2px solid rgba(212, 175, 55, 0.1);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.15);
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(132, 132, 132, 0.2);
+        }
+        
+        .feature-title {
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
+            color: var(--carbon);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .feature-desc {
+            color: var(--steel);
+            line-height: 1.8;
+            font-size: 1.15rem;
+            font-weight: 400;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.03;
+            animation: float 30s infinite linear;
+        }
+        
+        .circle {
+            border-radius: 50%;
+            background: var(--graphite);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 50px solid var(--graphite);
+            opacity: 0.05;
+        }
+        
+        .square {
+            border-radius: 8px;
+            background: var(--graphite);
+            transform: rotate(45deg);
+        }
+        
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.05; }
+            50% { opacity: 0.03; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .footer {
+            margin-top: 7rem;
+            color: var(--steel);
+            font-size: 1.1rem;
+            padding: 2rem;
+            border-top: 1px solid var(--silver);
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: var(--gold);
+        }
+        
+        @media (max-width: 1200px) {
+            .logo-container { width: 130px; height: 130px; }
+        }
+        
+        @media (max-width: 992px) {
+            h1 { font-size: 3.8rem; }
+            .coming-soon { font-size: 2.8rem; }
+            .features-grid { gap: 2.5rem; }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 3.2rem; }
+            .coming-soon { font-size: 2.2rem; letter-spacing: 1px; }
+            .date-badge { font-size: 1.3rem; padding: 1rem 2.5rem; }
+            .logo-container { width: 110px; height: 110px; }
+            .logo-inner { font-size: 2.5rem; }
+            .feature-card { padding: 2.5rem 2rem; }
+        }
+        
+        @media (max-width: 576px) {
+            h1 { font-size: 2.6rem; }
+            .coming-soon { font-size: 1.8rem; }
+            .features-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .feature-icon { width: 85px; height: 85px; font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes" id="shapes"></div>
+    
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-inner">PRA</div>
+                </div>
+            </div>
+            <h1>PRA-1u</h1>
+            <div class="coming-soon">Free Trail Over.</div>
+            <div class="date-badge">Launching June 21</div>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Unprecedented Speed</h3>
+                <p class="feature-desc">Experience real-time coding assistance with industry-leading response times and optimized performance architecture</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 class="feature-title">Advanced Cognition</h3>
+                <p class="feature-desc">Context-aware understanding for complex programming challenges and intelligent problem-solving capabilities</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h3 class="feature-title">Premium Quality</h3>
+                <p class="feature-desc">Enterprise-grade code generation with best-practice patterns, security-focused architecture, and elegant solutions</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2025 TWINKLE AI.^ All Rights Reserved.^ Crafted with Precision.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const shapesContainer = document.getElementById('shapes');
+            const shapeTypes = ['circle', 'triangle', 'square'];
+            
+            for (let i = 0; i < 30; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('shape');
+                
+                // Random shape type
+                const shapeType = shapeTypes[Math.floor(Math.random() * shapeTypes.length)];
+                shape.classList.add(shapeType);
+                
+                // Random properties
+                const size = Math.random() * 140 + 40;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 25;
+                const duration = 30 + Math.random() * 40;
+                const opacity = Math.random() * 0.05 + 0.01;
+                
+                if (shapeType === 'circle') {
+                    shape.style.width = `${size}px`;
+                    shape.style.height = `${size}px`;
+                } 
+                else if (shapeType === 'square') {
+                    shape.style.width = `${size}px`;
+                    shape.style.height = `${size}px`;
+                }
+                else if (shapeType === 'triangle') {
+                    shape.style.borderBottom = `${size}px solid ${getComputedStyle(document.documentElement).getPropertyValue('--graphite')}`;
+                    shape.style.borderLeft = `${size/2}px solid transparent`;
+                    shape.style.borderRight = `${size/2}px solid transparent`;
+                }
+                
+                shape.style.left = `${posX}vw`;
+                shape.style.top = `${posY}vh`;
+                shape.style.opacity = opacity;
+                shape.style.animationDelay = `${delay}s`;
+                shape.style.animationDuration = `${duration}s`;
+                
+                shapesContainer.appendChild(shape);
+            }
+        });
+    </script>
+</body>
+</html>
